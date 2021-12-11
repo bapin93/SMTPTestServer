@@ -1,4 +1,4 @@
-package org.example;
+package com.nonscio.smtptest;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -6,69 +6,82 @@ import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
 
 public class EmailMessage {
-    SMTPTestServer testServer;
-    byte[] messageData;
-    String envelopeSender;
-    String envelopeReceiver;
 
-    public EmailMessage(SMTPTestServer testServer, String sender, String receiver, byte[] messageData) {
+    //=========================================================================
+    // VARIABLES
+    //=========================================================================
+
+    private SMTPTestServer testServer;
+    private String envelopeSender;
+    private String envelopeReceiver;
+    private byte[] messageData;
+
+    //=========================================================================
+    // CONSTRUCTORS
+    //=========================================================================
+
+    /**
+     * EmailMessage constructor
+     * @param testServer the SMTPTestServer that is delivering this message
+     * @param envelopeSender the sender address
+     * @param envelopeReceiver the receiver address
+     * @param messageData the message data
+     */
+    public EmailMessage(SMTPTestServer testServer, String envelopeSender, String envelopeReceiver, byte[] messageData) {
         this.testServer = testServer;
-        this.envelopeSender = sender;
-        this.envelopeReceiver = receiver;
+        this.envelopeSender = envelopeSender;
+        this.envelopeReceiver = envelopeReceiver;
         this.messageData = messageData;
     }
 
+    //=========================================================================
+    // PUBLIC METHODS
+    //=========================================================================
+
+    /**
+     * Generates a JavaMail MimeMessage
+     * @return a JavaMail MimeMessage
+     * @throws MessagingException
+     */
     public MimeMessage getMimeMessage() throws MessagingException {
         return new MimeMessage(this.testServer.getSession(), new ByteArrayInputStream(this.messageData));
     }
 
     /**
-     * Get's the raw message DATA.
+     * Gets the raw message data
+     * @return messageData byte array
      */
     public byte[] getData() {
         return this.messageData;
     }
 
     /**
-     * Get's the RCPT TO:
+     * Gets the receiver address
+     * @return envelopeReceiver address
      */
     public String getEnvelopeReceiver() {
         return this.envelopeReceiver;
     }
 
     /**
-     * Get's the MAIL FROM:
+     * Gets the sender address
+     * @return envolopeSender address
      */
     public String getEnvelopeSender() {
         return this.envelopeSender;
     }
 
     /**
-     * Dumps the rough contents of the message for debugging purposes
+     * Dumps the message data out in a formatted manner
+     * @param out the PrintStream to dump the data
+     * @throws MessagingException
      */
     public void dumpMessage(PrintStream out) throws MessagingException {
         out.println("===== Dumping message =====");
-
         out.println("Envelope sender: " + this.getEnvelopeSender());
         out.println("Envelope recipient: " + this.getEnvelopeReceiver());
-
-        // It should all be convertible with ascii or utf8
         String content = new String(this.getData());
         out.println(content);
-
         out.println("===== End message dump =====");
-    }
-
-    /**
-     * Implementation of toString()
-     *
-     * @return getData() as a string or an empty string if getData is null
-     */
-    @Override
-    public String toString() {
-        if (this.getData() == null)
-            return "";
-
-        return new String(this.getData());
     }
 }
