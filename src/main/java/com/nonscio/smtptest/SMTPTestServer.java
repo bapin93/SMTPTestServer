@@ -68,6 +68,8 @@ public class SMTPTestServer implements SimpleMessageListener {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+
+        System.out.println(message);
     }
 
     //=========================================================================

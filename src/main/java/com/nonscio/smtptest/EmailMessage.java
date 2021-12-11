@@ -84,4 +84,17 @@ public class EmailMessage {
         out.println(content);
         out.println("===== End message dump =====");
     }
+
+    /**
+     * Implementation of toString()
+     * @return getData() as a string or an empty string if getData is null
+     */
+    @Override
+    public String toString()
+    {
+        if (this.getData() == null)
+            return "";
+
+        return new String(this.getData());
+    }
 }
